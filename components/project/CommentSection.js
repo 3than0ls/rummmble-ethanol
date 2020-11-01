@@ -1,19 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import LazyLoad from 'react-lazy-load';
+import { v4 as uuidv4 } from 'uuid';
 import CommentCard from './CommentCard';
 
-const CommentSection = ({ comments }) => (
-  <div className="my-8 w-full flex flex-col justify-center items-start">
-    {[...Array(comments).keys()].map((key) => (
+const CommentSection = ({ comments }) => {
+  const commentCards = comments.map((comment) => (
+    <LazyLoad>
       <CommentCard
-        key={key}
-        author="Example Author #2"
-        date={(new Date()).toLocaleString()}
-        content="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        key={uuidv4()}
+        author={comment.author}
+        date={comment.date}
+        content={comment.content}
       />
-    ))}
-  </div>
-);
+    </LazyLoad>
+  ));
+
+  return (
+    <div className="my-8 w-full flex flex-col justify-center items-start">
+      {commentCards}
+    </div>
+  );
+};
 
 CommentSection.propTypes = {
   comments: PropTypes.number.isRequired,

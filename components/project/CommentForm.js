@@ -13,7 +13,7 @@ const CommentForm = ({ comments }) => {
   return (
     <>
       <p className="font-semibold text-2xl text-custom-2-gray text-center sm:text-left">
-        {`${comments} Comments`}
+        {`${comments.length} Comments`}
       </p>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col justify-center items-center mt-6">
         <textarea

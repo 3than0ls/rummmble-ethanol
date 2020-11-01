@@ -1,11 +1,4 @@
 import React from 'react';
-import ProfilePicture from './ProfilePicture';
-
-/*
-Will replace all the <img> tags for icons with an Icon component
-
-most elements here are non functional
-*/
 
 export default function ProfileSidebar() {
   const [src, setSrc] = React.useState('https://images.unsplash.com/photo-1496440737103-cd596325d314?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80');
@@ -32,7 +25,13 @@ export default function ProfileSidebar() {
   return (
     <div className="relative w-full sm:w-72 md:w-96 lg:w-128 flex flex-col items-center pb-52">
       <div className="absolute top-0 transform -translate-y-24">
-        <ProfilePicture src={src} />
+        <div className="h-40 w-40">
+          <img
+            alt="Profile Icon"
+            className="h-full w-full object-cover rounded-2xl bg-white"
+            src={src}
+          />
+        </div>
       </div>
       <div className="mt-20 tracking-wide">
         <p className="mt-16 mb-2 font-bold text-3xl">Marcela Lagil</p>
