@@ -17,11 +17,12 @@ const InputField = ({
         message = 'Passwords must match';
       }
     }
+    console.log(errors);
     return <p className="text-red-700 mt-2">{message}</p>;
   };
 
   return (
-    <div className="mb-8 w-1/3">
+    <div className="mb-8 w-2/5">
       <label htmlFor={id} className="text-black text-center tracking-wide text-lg mb-3">
         <span className="font-bold">{label}</span>
         <input

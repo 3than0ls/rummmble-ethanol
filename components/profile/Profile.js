@@ -9,10 +9,6 @@ import ProjectCard from './ProfileDetails/ProjectCard';
 const Profile = () => {
   const [profileBannerNav, setProfileBannerNav] = useState('followers');
 
-  useEffect(() => {
-    console.log(profileBannerNav);
-  }, [profileBannerNav]);
-
   const name = 'Marcela Lagil';
 
   const followers = [

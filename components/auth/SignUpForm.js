@@ -16,7 +16,7 @@ const SignUpForm = () => {
 
   const onSubmit = React.useCallback(async (data, e) => {
     e.preventDefault();
-    const { email, password } = data;
+    const { email, password, displayName } = data;
     try {
       await firebase.auth().createUserWithEmailAndPassword(email, password);
       router.push('/');
@@ -27,9 +27,11 @@ const SignUpForm = () => {
           break;
         default:
           setError('email', { message: 'Error' });
-          console.log(err);
+          console.log(err.code, err);
       }
     }
+
+    const user = firebase.auth().currentUser;
   }, [router, setError]);
 
   if (currentUser) {
@@ -37,14 +39,25 @@ const SignUpForm = () => {
   }
 
   return (
-    <div className="relative bg-gradient-to-b from-green-600 via-green-400 to-yellow-200 flex flex-row-reverse justify-between text-center">
+    <div className="relative bg-gradient-to-b from-green-600 via-green-400 to-yellow-200 flex flex-row-reverse justify-between items-center text-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="mb-16 w-7/12 py-56 pl-16 flex flex-col justify-center items-center bg-white rounded-l-full"
+        className="mb-16 w-7/12 h-screen pl-16 flex flex-col justify-center items-center bg-white rounded-l-full"
       >
-        <div className="flex flex-col py-10 mb-8">
+        <div className="flex flex-col mb-8">
           <h1 className="font-bold tracking-wide text-5xl text-gray-800 text-center">Create an account</h1>
         </div>
+        <InputField
+          label="Enter Display Name"
+          type="text"
+          name="displayName"
+          register={
+            register({
+              required: true,
+            })
+          }
+          errors={errors}
+        />
         <InputField
           label="Enter Email"
           type="text"
@@ -84,7 +97,7 @@ const SignUpForm = () => {
                 value: true,
                 message: 'Password is required',
               },
-              validate: (value) => value === register.password,
+              validate: (value) => value !== register.password,
             })
           }
           errors={errors}
@@ -97,7 +110,7 @@ const SignUpForm = () => {
         </button>
       </form>
 
-      <div className="w-1/3 h-screen flex flex-col justify-center items-center text-center text-white">
+      <div className="w-1/3 flex flex-col justify-center items-center text-center text-white">
         <h1 className="font-bold text-4xl">rummmble</h1>
         <p className="text-2xl m-4">Already have an account? Log in!</p>
         <a
@@ -112,19 +125,3 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
-
-/* <InputField
-label="Confirm Password"
-name="confirmPassword"
-type="password"
-register={
-  register({
-    required: {
-      value: true,
-      message: 'Password is required',
-    },
-    validate: (value) => value === register.password,
-  })
-}
-errors={errors}
-/> */

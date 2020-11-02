@@ -11,44 +11,57 @@ const Navbar = () => {
   };
   const signOut = () => {
     firebase.auth().signOut();
+    router.push('/login');
   };
 
   let content;
   if (!currentUser) {
-    content = (
-      <div
-        className="px-6 bg-red-500"
+    content = [
+      <button
+        type="button"
+        className="border-2 border-custom-5-cyan text-custom-5-cyan mr-6 px-5 py-2 font-bold rounded focus:outline-none"
+        onClick={() => { router.push('/signup'); }}
+        onKeyPress={() => { router.push('/signup'); }}
+        tabIndex={0}
+      >
+        Create Account
+      </button>,
+      <button
+        type="button"
+        className="bg-custom-5-cyan text-black px-5 py-2 font-bold rounded focus:outline-none"
         onClick={signIn}
         onKeyPress={signIn}
-        role="button"
-        tabIndex={0}
+        tabIndex={-1}
       >
         Sign In
-      </div>
-    );
+      </button>,
+    ];
   } else {
-    content = (
-      <div
-        className="px-6 bg-red-500"
-        onClick={signOut}
-        onKeyPress={signOut}
-        role="button"
+    content = [
+      <button
+        type="button"
+        className="border-2 border-custom-5-cyan text-custom-5-cyan mr-6 px-5 py-2 font-bold rounded shadow custom-shadow focus:outline-none"
+        onClick={router.push('/signup')}
+        onKeyPress={router.push('/signup')}
         tabIndex={0}
       >
+        Upload
+      </button>,
+      <button
+        type="button"
+        className="bg-custom-5-cyan text-black px-5 py-2 font-bold rounded focus:outline-none"
+        onClick={signOut}
+        onKeyPress={signOut}
+        tabIndex={-1}
+      >
         Sign Out
-      </div>
-    );
+      </button>,
+    ];
   }
   return (
-    <div className="flex justify-between items-center text-white bg-custom-1-dblue shadow-lg px-12 py-1">
-      <h1 className="text-4xl text-white">rummmble</h1>
+    <div className="flex justify-between items-center text-white bg-custom-1-dblue shadow-lg px-12 py-2">
+      <a href="/" className="text-4xl text-white">rummmble</a>
       <div className="flex items-center">
-        <button
-          type="button"
-          className="bg-custom-5-cyan text-black px-4 py-1 mr-6 font-bold rounded shadow custom-shadow"
-        >
-          Upload
-        </button>
         {content}
       </div>
     </div>
