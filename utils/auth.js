@@ -4,13 +4,33 @@ export const getAccessToken = () => Cookies.get('access_token');
 export const getRefreshToken = () => Cookies.get('refresh_token');
 export const isAuthenticated = () => (getAccessToken() === 'true');
 
-export const login = () => {
-  // https://docs.amplify.aws/lib/auth/getting-started/q/platform/js
-  // https://serverless-stack.com/chapters/login-with-aws-cognito.html
-  // https://www.sitepoint.com/tutorial-build-a-react-js-application-with-user-login-and-authentication/
-};
+// we'll make a completely real authenticator
+// it'll have a definite dictionary with usernames to emails
+// and it'll store whichever one your on in dictionary
+// there will only be 2 accounts
 
-export const authenticate = () => {
-  // https://www.sitepoint.com/tutorial-build-a-react-js-application-with-user-login-and-authentication/
-  // https://stackoverflow.com/questions/49819183/react-what-is-the-best-way-to-handle-login-and-authentication
+// first learn how the fuck tokens work
+
+export const authenticate = async () => {
+  if (getRefreshToken()) {
+    try {
+      // const tokens = await refreshTokens(); // call an API, returns tokensc
+      const tokens = {};
+
+      const expires = (tokens.expires_in || 60 * 60) * 1000;
+      const inOneHour = new Date(new Date().getTime() + expires);
+
+      // you will have the exact same setters in your Login page/app too
+      Cookies.set('access_token', tokens.access_token, { expires: inOneHour });
+      Cookies.set('refresh_token', tokens.refresh_token);
+
+      return true;
+    } catch (error) {
+      console.log('refresh token bad');
+      return false;
+    }
+  }
+
+  console.log('refresh token bad');
+  return false;
 };

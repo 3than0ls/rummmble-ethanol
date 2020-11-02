@@ -1,13 +1,40 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import InputField from './InputField';
+import firebase from '../../firebase';
+import { AuthContext } from '../Auth';
 
 const SignUpForm = () => {
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register, handleSubmit, errors, setError,
+  } = useForm();
 
-  const onSubmit = (data) => {
-    console.log('signing in', data);
-  };
+  const router = useRouter();
+
+  const currentUser = React.useContext(AuthContext);
+
+  const onSubmit = React.useCallback(async (data, e) => {
+    e.preventDefault();
+    const { email, password } = data;
+    try {
+      await firebase.auth().createUserWithEmailAndPassword(email, password);
+      router.push('/');
+    } catch (err) {
+      switch (err.code) {
+        case 'auth/email-already-exists':
+          setError('email', { message: 'Email already exists.' });
+          break;
+        default:
+          setError('email', { message: 'Error' });
+          console.log(err);
+      }
+    }
+  }, [router, setError]);
+
+  if (currentUser) {
+    router.push('/');
+  }
 
   return (
     <div className="relative bg-gradient-to-b from-green-600 via-green-400 to-yellow-200 flex flex-row-reverse justify-between text-center">
@@ -24,7 +51,7 @@ const SignUpForm = () => {
           name="email"
           register={
             register({
-              required: 'Email/username is required',
+              required: true,
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
                 message: 'Enter a valid email address',
@@ -37,25 +64,29 @@ const SignUpForm = () => {
           label="Enter Password"
           name="password"
           type="password"
-          register={register({
-            required: {
-              value: true,
-              message: 'Password is required',
-            },
-          })}
+          register={
+            register({
+              required: {
+                value: true,
+                message: 'Password is required',
+              },
+            })
+          }
           errors={errors}
         />
         <InputField
           label="Confirm Password"
           name="confirmPassword"
           type="password"
-          register={register({
-            required: {
-              value: true,
-              message: 'Password is required',
-            },
-            validate: (value) => value === register.password,
-          })}
+          register={
+            register({
+              required: {
+                value: true,
+                message: 'Password is required',
+              },
+              validate: (value) => value === register.password,
+            })
+          }
           errors={errors}
         />
         <button
@@ -81,3 +112,19 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
+
+/* <InputField
+label="Confirm Password"
+name="confirmPassword"
+type="password"
+register={
+  register({
+    required: {
+      value: true,
+      message: 'Password is required',
+    },
+    validate: (value) => value === register.password,
+  })
+}
+errors={errors}
+/> */

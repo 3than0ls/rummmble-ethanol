@@ -5,8 +5,10 @@ import Icon from '../misc/Icon';
 
 const CommentForm = ({ comments }) => {
   const { register, handleSubmit, reset } = useForm();
-  const onSubmit = () => {
+  const onSubmit = (data, e) => {
     // handle data
+    e.preventDefault();
+    console.log(data);
     reset();
   };
 

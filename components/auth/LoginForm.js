@@ -1,13 +1,43 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router';
 import InputField from './InputField';
+import firebase from '../../firebase';
+import { AuthContext } from '../Auth';
 
 const LoginForm = () => {
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register, handleSubmit, errors, setError,
+  } = useForm();
 
-  const onSubmit = (data) => {
-    console.log('logging in', data);
-  };
+  const router = useRouter();
+
+  const currentUser = React.useContext(AuthContext);
+
+  const onSubmit = React.useCallback(async (data, e) => {
+    e.preventDefault();
+    const { email, password } = data;
+    try {
+      await firebase.auth().signInWithEmailAndPassword(email, password);
+      router.push('/');
+    } catch (err) {
+      switch (err.code) {
+        case 'auth/user-not-found':
+          setError('email', { message: 'Email does not exist.' });
+          break;
+        case 'auth/wrong-password':
+          setError('password', { message: 'Incorrect password' });
+          break;
+        default:
+          setError('email', { message: 'Error' });
+          console.log(err);
+      }
+    }
+  }, [router, setError]);
+
+  if (currentUser) {
+    router.push('/');
+  }
 
   return (
     <div className="relative bg-gradient-to-b from-blue-900 via-blue-800 to-blue-600 flex flex-row justify-between text-center">
@@ -16,7 +46,7 @@ const LoginForm = () => {
         className="mb-16 w-7/12 py-56 pr-16 flex flex-col justify-center items-center bg-white rounded-r-full"
       >
         <div className="flex flex-col py-10 mb-8">
-          <h1 className="font-bold tracking-wide text-5xl text-gray-800 text-center">Sign in to Rummmble</h1>
+          <h1 className="font-bold tracking-wide text-5xl text-gray-800 text-center">Log in to Rummmble</h1>
           <p className="text-3xl text-gray-600 text-center">Enter your details below</p>
         </div>
         <InputField
@@ -25,7 +55,10 @@ const LoginForm = () => {
           name="email"
           register={
             register({
-              required: 'Email/username is required',
+              required: {
+                value: true,
+                message: 'Email is required',
+              },
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
                 message: 'Enter a valid email address',

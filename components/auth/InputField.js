@@ -11,8 +11,11 @@ const InputField = ({
     let message;
     if (errors[name]) {
       message = errors[name].message;
-    } else if (errors.confirmPassword && errors.confirmPassword.type === 'validate') {
-      message = 'Passwords must match';
+    }
+    if (type === 'password') {
+      if (errors.confirmPassword && errors.confirmPassword.type === 'validate') {
+        message = 'Passwords must match';
+      }
     }
     return <p className="text-red-700 mt-2">{message}</p>;
   };
