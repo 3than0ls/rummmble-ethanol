@@ -31,7 +31,9 @@ const LoginForm = ({ firebase, router }) => {
     }
   }, [firebase, router, setError]);
 
-  const { currentUser } = firebase.auth;
+  const [currentUser, setCurrentUser] = React.useState('');
+  firebase.auth.onAuthStateChanged(setCurrentUser);
+
   if (currentUser) {
     router.push('/');
   }

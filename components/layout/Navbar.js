@@ -12,8 +12,9 @@ const Navbar = ({ firebase, router }) => {
     router.push('/login');
   };
 
-  const { currentUser } = firebase.auth;
-  
+  const [currentUser, setCurrentUser] = React.useState('');
+  firebase.auth.onAuthStateChanged(setCurrentUser);
+
   let content;
   if (!currentUser) {
     content = (
