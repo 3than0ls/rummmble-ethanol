@@ -1,0 +1,2 @@
+use .then() and .catch() rather than a try/catch block for promises
+replace <a> with <Link> from next/link

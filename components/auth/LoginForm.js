@@ -1,24 +1,20 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { useRouter } from 'next/router';
+import { withRouter } from 'next/router';
+import { withFirebase } from '../firebase/index.js';
 import InputField from './InputField';
-import firebase from '../../firebase';
-import { AuthContext } from '../Auth';
 
-const LoginForm = () => {
+const LoginForm = ({ firebase, router }) => {
   const {
     register, handleSubmit, errors, setError,
   } = useForm();
-
-  const router = useRouter();
-
-  const currentUser = React.useContext(AuthContext);
 
   const onSubmit = React.useCallback(async (data, e) => {
     e.preventDefault();
     const { email, password } = data;
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      await firebase.signInWithEmailAndPassword(email, password);
       router.push('/');
     } catch (err) {
       switch (err.code) {
@@ -33,8 +29,9 @@ const LoginForm = () => {
           console.log(err);
       }
     }
-  }, [router, setError]);
+  }, [firebase, router, setError]);
 
+  const { currentUser } = firebase.auth;
   if (currentUser) {
     router.push('/');
   }
@@ -97,4 +94,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default withRouter(withFirebase(LoginForm));

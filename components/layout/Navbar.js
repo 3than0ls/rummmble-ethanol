@@ -1,62 +1,66 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
-import { useRouter } from 'next/router';
-import { AuthContext } from '../Auth';
-import firebase from '../../firebase';
+import { withRouter } from 'next/router';
+import { withFirebase } from '../firebase/index.js';
 
-const Navbar = () => {
-  const currentUser = React.useContext(AuthContext);
-  const router = useRouter();
+const Navbar = ({ firebase, router }) => {
   const signIn = () => {
     router.push('/login');
   };
   const signOut = () => {
-    firebase.auth().signOut();
+    firebase.signOut();
     router.push('/login');
   };
 
+  const { currentUser } = firebase.auth;
+  
   let content;
   if (!currentUser) {
-    content = [
-      <button
-        type="button"
-        className="border-2 border-custom-5-cyan text-custom-5-cyan mr-6 px-5 py-2 font-bold rounded focus:outline-none"
-        onClick={() => { router.push('/signup'); }}
-        onKeyPress={() => { router.push('/signup'); }}
-        tabIndex={0}
-      >
-        Create Account
-      </button>,
-      <button
-        type="button"
-        className="bg-custom-5-cyan text-black px-5 py-2 font-bold rounded focus:outline-none"
-        onClick={signIn}
-        onKeyPress={signIn}
-        tabIndex={-1}
-      >
-        Sign In
-      </button>,
-    ];
+    content = (
+      <>
+        <button
+          type="button"
+          className="border-2 border-custom-5-cyan text-custom-5-cyan mr-6 px-5 py-2 font-bold rounded focus:outline-none"
+          onClick={() => { router.push('/signup'); }}
+          onKeyPress={() => { router.push('/signup'); }}
+          tabIndex={0}
+        >
+          Create Account
+        </button>
+        <button
+          type="button"
+          className="bg-custom-5-cyan text-black px-5 py-2 font-bold rounded focus:outline-none"
+          onClick={signIn}
+          onKeyPress={signIn}
+          tabIndex={-1}
+        >
+          Sign In
+        </button>
+      </>
+    );
   } else {
-    content = [
-      <button
-        type="button"
-        className="border-2 border-custom-5-cyan text-custom-5-cyan mr-6 px-5 py-2 font-bold rounded shadow custom-shadow focus:outline-none"
-        onClick={router.push('/signup')}
-        onKeyPress={router.push('/signup')}
-        tabIndex={0}
-      >
-        Upload
-      </button>,
-      <button
-        type="button"
-        className="bg-custom-5-cyan text-black px-5 py-2 font-bold rounded focus:outline-none"
-        onClick={signOut}
-        onKeyPress={signOut}
-        tabIndex={-1}
-      >
-        Sign Out
-      </button>,
-    ];
+    content = (
+      <>
+        <button
+          type="button"
+          className="border-2 border-custom-5-cyan text-custom-5-cyan mr-6 px-5 py-2 font-bold rounded shadow custom-shadow focus:outline-none"
+          onClick={() => (router.push('/signup'))}
+          onKeyPress={() => (router.push('/signup'))}
+          tabIndex={0}
+        >
+          Upload
+        </button>
+        <button
+          type="button"
+          className="bg-custom-5-cyan text-black px-5 py-2 font-bold rounded focus:outline-none"
+          onClick={signOut}
+          onKeyPress={signOut}
+          tabIndex={-1}
+        >
+          Sign Out
+        </button>
+      </>
+    );
   }
   return (
     <div className="flex justify-between items-center text-white bg-custom-1-dblue shadow-lg px-12 py-2">
@@ -68,4 +72,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default withRouter(withFirebase(Navbar));
